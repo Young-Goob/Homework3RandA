@@ -20,6 +20,8 @@ library(tidyverse)
 ## Set working directory
 # Session -> Set working directory -> Choose directory -> Select desktop -> Open; 
 
+
+
 ## Open .csv data
 katespade = read.csv("katespade.csv", header=TRUE)
 options(scipen = 999) ## Avoids scientific notation
@@ -28,6 +30,15 @@ options(scipen = 999) ## Avoids scientific notation
 # 1. Define treatment and control groups
 treatment <- katespade[katespade$ad == 1, ]
 control <- katespade[katespade$ad == 0, ]
+
+# Step 1: Perform Randomization Check
+randomization_check = 
+  katespade |>
+  group_by(ad) |>
+  summarise(mean(choice), mean(num_impressions), mean(impression_max_day), mean(impression_max_hour))
+
+# Step 2: Run the randomization check
+randomization_check
 
 
 # 2. a) Two-sample t-test
@@ -93,3 +104,12 @@ extra_purchases_control = n_control * rate_treat
 # Step 3: Calculate additional revenue and output
 extra_revenue = extra_purchases_control * 40
 cat(extra_revenue)
+
+
+# 7. Power Test
+# Step 1: Establish p1 and p2
+rate_control
+rate_treat
+
+#Step 2: Run the power test
+power.prop.test(p1=rate_control, p2=rate_treat, sig.level = 0.05, power = 0.8)
